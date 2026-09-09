@@ -1,0 +1,3 @@
+variable "my-kaju1" {
+
+}
