@@ -1,3 +1,3 @@
-variable "my-kaju1" {
+variable "my_kaju1" {
 
 }
