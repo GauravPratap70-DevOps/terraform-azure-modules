@@ -1,0 +1,36 @@
+trigger:
+  branches:
+    include:
+      - main
+      - feature-branch
+
+pool:
+  name: 'My pipeline Agent'
+
+variables:
+- group: terraform-dev
+
+steps:
+
+- checkout: self
+
+- script: terraform --version
+  displayName: 'Check Terraform Version'
+
+- script: terraform init
+  displayName: 'Terraform Init'
+  workingDirectory: '$(Build.SourcesDirectory)/my_parent_module'
+
+- script: terraform fmt -check
+  displayName: 'Terraform Format Check'
+  workingDirectory: '$(Build.SourcesDirectory)/my_parent_module'
+
+- script: terraform validate
+  displayName: 'Terraform Validate'
+  workingDirectory: '$(Build.SourcesDirectory)/my_parent_module'
+
+- script: terraform plan
+  displayName: 'Terraform Plan'
+  workingDirectory: '$(Build.SourcesDirectory)/my_parent_module'
+  env:
+    TF_VAR_my_kaju1: $(TF_VAR_my_kaju1)
