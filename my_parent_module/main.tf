@@ -3,3 +3,9 @@ module "this-rg" {
 
   kiss = var.my_kaju1
 }
+
+module "my_stg" {
+  source = "../my_child_module/storage_group"
+  stg1   = var.storage1
+}
+
