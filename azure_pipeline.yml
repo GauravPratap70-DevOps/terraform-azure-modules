@@ -11,8 +11,18 @@ steps:
 
 - checkout: self
 
+- task: DownloadSecureFile@1
+  name: tfvars
+  displayName: 'Download Terraform Variables'
+  inputs:
+    secureFile: 'terraform.tfvars'
+
+- powershell: |
+    Copy-Item "$(tfvars.secureFilePath)" "$(Build.SourcesDirectory)\my_parent_module\terraform.tfvars"
+  displayName: 'Copy Terraform Variables'
+
 - script: terraform --version
-  displayName: 'Check Terraform Version'
+  displayName: 'Terraform Version'
 
 - script: terraform init
   displayName: 'Terraform Init'
@@ -26,16 +36,6 @@ steps:
   displayName: 'Terraform Validate'
   workingDirectory: '$(Build.SourcesDirectory)/my_parent_module'
 
-- powershell: |
-    @'
-    my_kaju1 = {
-      this-rg1 = {
-        name     = "my-kaju"
-        location = "Central India"
-      }
-    }
-    '@ | Set-Content terraform.auto.tfvars
-
-    terraform plan
+- script: terraform plan -var-file=terraform.tfvars
   displayName: 'Terraform Plan'
   workingDirectory: '$(Build.SourcesDirectory)/my_parent_module'
