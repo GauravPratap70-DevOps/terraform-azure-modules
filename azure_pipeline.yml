@@ -7,9 +7,6 @@ trigger:
 pool:
   name: 'My pipeline Agent'
 
-variables:
-- group: terraform-dev
-
 steps:
 
 - checkout: self
@@ -29,8 +26,16 @@ steps:
   displayName: 'Terraform Validate'
   workingDirectory: '$(Build.SourcesDirectory)/my_parent_module'
 
-- script: terraform plan
+- powershell: |
+    @'
+    my_kaju1 = {
+      this-rg1 = {
+        name     = "my-kaju"
+        location = "Central India"
+      }
+    }
+    '@ | Set-Content terraform.auto.tfvars
+
+    terraform plan
   displayName: 'Terraform Plan'
   workingDirectory: '$(Build.SourcesDirectory)/my_parent_module'
-  env:
-    TF_VAR_my_kaju1: $(TF_VAR_my_kaju1)
