@@ -2,6 +2,6 @@ variable "my_kaju1" {
 
 }
 
-variable "storage1" {
+variable "mystg1" {
 
 }

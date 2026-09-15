@@ -6,6 +6,6 @@ module "this-rg" {
 
 module "my_stg" {
   source = "../my_child_module/storage_group"
-  stg1   = var.storage1
+  stg1   = var.mystg1
 }
 
