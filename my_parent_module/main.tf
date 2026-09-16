@@ -9,3 +9,8 @@ module "my_stg" {
   stg1   = var.mystg1
 }
 
+module "my_vnet" {
+  source   = "../my_child_module/vnet_group"
+  my_vnet1 = var.vnet2
+
+}

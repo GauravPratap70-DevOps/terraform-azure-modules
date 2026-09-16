@@ -1,0 +1,7 @@
+resource "azurerm_virtual_network" "my_vnet" {
+    for_each = var.my_vnet1
+    name = each.value.name
+    resource_group_name = each.value.resource_group_name
+    location = each.value.location
+    address_space = each.value.address_space
+}
