@@ -11,33 +11,44 @@ steps:
 
 - checkout: self
 
-# Download the latest secure terraform.tfvars
 - task: DownloadSecureFile@1
   name: tfvars
   displayName: 'Download Terraform Variables'
   inputs:
     secureFile: 'terraform.tfvars'
 
-# Copy secure tfvars into Terraform working directory
 - powershell: |
     Copy-Item "$(tfvars.secureFilePath)" "$(Build.SourcesDirectory)\my_parent_module\terraform.tfvars" -Force
   displayName: 'Copy Terraform Variables'
+
+- powershell: |
+    Write-Host "Checking terraform.tfvars..."
+    if (Test-Path "$(Build.SourcesDirectory)\my_parent_module\terraform.tfvars") {
+        Write-Host "terraform.tfvars EXISTS"
+        Write-Host "Checking required variables..."
+        Get-Content "$(Build.SourcesDirectory)\my_parent_module\terraform.tfvars" |
+          Select-String "^(vnet2|stg)"
+    }
+    else {
+        Write-Error "terraform.tfvars NOT FOUND"
+    }
+  displayName: 'Verify Terraform Variables'
 
 - script: terraform --version
   displayName: 'Terraform Version'
 
 - script: terraform init
   displayName: 'Terraform Init'
-  workingDirectory: '$(Build.SourcesDirectory)\my_parent_module'
+  workingDirectory: '$(Build.SourcesDirectory)/my_parent_module'
 
 - script: terraform fmt -check
   displayName: 'Terraform Format Check'
-  workingDirectory: '$(Build.SourcesDirectory)\my_parent_module'
+  workingDirectory: '$(Build.SourcesDirectory)/my_parent_module'
 
 - script: terraform validate
   displayName: 'Terraform Validate'
-  workingDirectory: '$(Build.SourcesDirectory)\my_parent_module'
+  workingDirectory: '$(Build.SourcesDirectory)/my_parent_module'
 
 - script: terraform plan -var-file="terraform.tfvars"
   displayName: 'Terraform Plan'
-  workingDirectory: '$(Build.SourcesDirectory)\my_parent_module'
+  workingDirectory: '$(Build.SourcesDirectory)/my_parent_module'
